@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <script type="text/javascript" src="cordova.ios.js"></script>
+        <script type="text/javascript" src="webnotifications.js"></script>
+        <script type="text/javascript">
+
+var buffer = [];
+
+function log(msg) {
+    var d = new Date();
+    var s = (d.getHours() * 60 + d.getMinutes()) * 60 + d.getSeconds();
+    var msg = "[" + s + "] " + msg;
+    buffer.push(msg);
+    console.log(msg);
+    setTimeout(flushlog, 0);
+}
+
+function flushlog() {
+    buffer.forEach(function(e,i) {
+        var html = "<div>" + e + "</div>";
+        document.querySelectorAll("input")[1].insertAdjacentHTML("afterend", html);
+    });
+    buffer.length = 0;
+}
+
+var notification = null;
+
+function notify(title, body, tag, delay) {
+    log("Scheduling Notification: " + tag);
+    notification = new Notification(title, {
+        body: body,
+        tag: tag,
+        delay: delay,
+        onclick: function() { log("onclick: " + tag); notification = null; },
+        onclose: function() { log("onclose: " + tag); notification = null; },
+        onerror: function() { log("onerror: " + tag); notification = null; },
+    });
+}
+
+function cancelNotify() {
+    log("try cancel notification: " + notification);
+    notification.close();
+}
+
+document.addEventListener('deviceready', function () {
+});
+
+document.addEventListener('resign', function () {
+    notify('Resign', 'Cruel World', '#resign', 5);
+});
+
+document.addEventListener('pause', function () {
+    notify('Pause', 'Cruel World', '#pause', 5);
+});
+
+document.addEventListener('resume', function () {
+    //notify('Resume', 'Good World', '#resume', 0);
+});
+
+function notifyButtonClick() {
+    notify('Hello', 'World', '#button', 0);
+}
+
+    </script>
+
+    <input type=button onclick="notifyButtonClick();" value="new Notification()"/>
+    <input type=button onclick="cancelNotify();" value="cancelNotify()"/>
+    <input type=button onclick="flushlog();" value="flushlog()"/>
+
+</body>
+</html>
