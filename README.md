@@ -6,7 +6,7 @@
 
 Using this plugin requires [Android Cordova](www.cordova.io)
 
-1. Modify your AppDelegate.m file to add the code supplied in the AppDelegate.m.diff file.
+1. Modify your AppDelegate.m file to add the code supplied in the src/ios/AppDelegate.m.diff file.
 
 ## Using the plugin
 
