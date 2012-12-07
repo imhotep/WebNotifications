@@ -27,9 +27,8 @@
 
 - (CDVPlugin*)initWithWebView:(UIWebView*)theWebView;
 
-- (void)createNotification:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void)closeNotification:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
-- (void)clickNofification:(NSString*)tag;
+- (void)createNotification:(CDVInvokedUrlCommand*)command;
+- (void)closeNotification:(CDVInvokedUrlCommand*)command;
+- (void)clickNotification:(NSString*)tag;
 
 @end

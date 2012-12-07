@@ -32,7 +32,33 @@
     if (self) {
         self.activeNotifications = [NSMutableArray array];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveLocalNotification:)
+                                                 name:@"CDVLocalNotification" object:nil];
+    
     return self;
+}
+
+- (void)didReceiveLocalNotification:(NSNotification *)notification
+{
+    // Note: if app wasn't running, you can still get a LN and then it doesn't call this function,
+    // I think it calls app start but notifies you that LN caused the app start or something like that.
+    
+    //UIApplicationState state = [application applicationState];
+    //BOOL wasForeground = (state == UIApplicationStateActive);
+    
+    //NSString *title = [notification.userInfo objectForKey:@"title"];
+    //NSString *body = [notification.userInfo objectForKey:@"body"];
+    
+    UILocalNotification* localNotification = [notification object]; // cast to LocalNotification
+    NSString *tag = [localNotification.userInfo objectForKey:@"tag"];
+    
+    [self clickNotification:tag];
+    
+    UIApplication* app = [UIApplication sharedApplication];
+    app.applicationIconBadgeNumber = localNotification.applicationIconBadgeNumber;
+    app.scheduledLocalNotifications = [ NSArray arrayWithArray:app.scheduledLocalNotifications ];
 }
 
 - (void)createNotification:(CDVInvokedUrlCommand*)command
@@ -96,7 +122,7 @@
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsInt:0] callbackId:command.callbackId];
 }
 
-- (void)clickNofification:(NSString*)tag {
+- (void)clickNotification:(NSString*)tag {
     NSString *jsCallBack;
     
     jsCallBack = [NSString stringWithFormat:@"window.Notification.callOnclickByTag('%@')", tag];
